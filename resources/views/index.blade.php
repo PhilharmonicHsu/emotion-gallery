@@ -27,6 +27,7 @@
             max-width: 90%; /* 限制画廊宽度 */
             margin: 10px auto 50px auto;
             padding: 20px;
+            min-height: 5rem;
         }
 
         .gallery .img-box {

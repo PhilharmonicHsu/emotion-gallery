@@ -39,11 +39,11 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            width: 90%;
             max-width: 400px;
         }
 
         input[type="file"] {
+            width: 90%;
             padding: 10px;
             margin-top: 10px;
             border: 2px dashed #6a5acd;

@@ -27,8 +27,14 @@ class UploadImageRequest extends FormRequest
             // 定義驗證規則
             'image' => [
                 'required',
-                'image',
-                'mimes:jpeg,png,jpg,gif,heic',
+                'file',
+                function ($attribute, $value, $fail) {
+                    $mimeType = $value->getMimeType();
+                    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/pjpeg'];
+                    if (!in_array($mimeType, $allowedMimeTypes)) {
+                        $fail('The ' . $attribute . ' must be a valid image.');
+                    }
+                },
                 'max:2048',
             ]
         ];

@@ -61,6 +61,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "heroku": {
+            "php-config": [
+                "bcmath.enable=1"
+            ]
         }
     },
     "config": {

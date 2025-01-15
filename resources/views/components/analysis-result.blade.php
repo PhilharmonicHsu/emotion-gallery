@@ -158,7 +158,12 @@
                 align-items: center;
                 gap: 20px;
                 height: 14rem;
-                margin-left: 3rem;
+
+
+                @media (max-width: 400px) {
+                    height: auto;
+                    flex-direction: column;
+                }
 
                 canvas#emotionChart {
                     width: 200px; /* 限制图表宽度 */
@@ -202,6 +207,7 @@
             cursor: pointer;
             transition: all 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
             animation: float 2s infinite ease-in-out;
+            text-align: center;
 
             &:hover {
                 transform: scale(1.1);

@@ -22,7 +22,6 @@ class AnalysisResultController extends Controller
         $this->imageAnalysisService = $imageAnalysisService;
         $this->analysisResultService = $analysisResultService;
     }
-
     public function upload(Request $request): RedirectResponse
     {
         // 驗證上傳的圖片
@@ -40,11 +39,9 @@ class AnalysisResultController extends Controller
         return redirect()->route('analysis-results', ['id' => $createdAnalysisResult->id]);
     }
 
-    public function getAnalysisResult(int $id): JsonResponse
+    public function getAnalysisResult(AnalysisResult $analysisResult): JsonResponse
     {
-        $analysis_result = AnalysisResult::find($id);
-
-        return response()->json($analysis_result);
+        return response()->json($analysisResult);
     }
 
     public function getRecentAnalysisResults(): JsonResponse

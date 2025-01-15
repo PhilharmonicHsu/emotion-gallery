@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artistic Image Layout</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style lang="scss">
         body {
             background: linear-gradient(to bottom, #0d1117, #161b22);
@@ -24,19 +25,27 @@
             padding: 20px;
         }
 
-        .gallery img {
+        .gallery .img-box {
             flex-grow: 1;
-            flex-basis: calc(10% - 15px); /* 每张图片的初始大小 */
+            flex-basis: calc(30% - 15px); /* 每张图片的初始大小 */
             height: 200px; /* 图片保持宽高比 */
             width: auto;
-            object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
             transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+            background-color: #00d4ff;
+            overflow: hidden;
+            display: inline-block; /* 确保 div 是 inline-block */
+
+            img {
+                object-fit: cover;
+                height: 200px;
+                width: 100%;
+            }
         }
 
         /* 鼠标悬停效果 */
-        .gallery img:hover {
+        .gallery .img-box:hover {
             transform: scale(1.1) rotate(-2deg); /* 放大并旋转 */
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
             filter: brightness(1.2) contrast(1.1);
@@ -44,26 +53,14 @@
 
         /* 控制特定图片大小 */
         .gallery .large {
-            flex-basis: calc(15% - 15px);
+            flex-basis: calc(40% - 15px);
         }
+
         .gallery .tall {
-            flex-basis: calc(5% - 15px);
+            flex-basis: calc(20% - 15px);
         }
 
-        /* 动态渐变背景 */
-        .gallery img::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
-            z-index: 1;
-            transition: opacity 0.4s ease;
-        }
-
-        .gallery img:hover::after {
+        .gallery .img-box:hover::after {
             opacity: 0;
         }
 
@@ -173,242 +170,214 @@
             }
         }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Modal 样式 */
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            width: 80%;
-            max-width: 600px;
+        dialog {
+            width: 60%;
+            max-width: 500px;
+            border: none;
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 10px;
-            z-index: 1001;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, #0d1117, #161b22);
+            position: relative;
 
-        .modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
+            &::backdrop {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
 
-        .modal-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #58a6ff;
-        }
+            .close-dialog {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #888;
+                cursor: pointer;
 
-        .modal-body {
-            text-align: center;
-            color: #e6edf3;
-        }
+                &:hover {
+                    color: #333;
+                }
+            }
 
-        .modal img {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
 
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.2rem;
-            color: #fff;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .close-modal:hover {
-            background: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Emotion Gallery</h1>
-        <section class="gallery" id="gallery"></section>
+<div class="container">
+    <h1 class="title">Emotion Gallery</h1>
+    <section class="gallery" id="gallery"></section>
+</div>
+<!-- Dialog -->
+<dialog id="dialog">
+    <button class="close-dialog" id="closeDialog">×</button>
+    @include('components.analysis-result', ['isForResultPage' => false])
+</dialog>
+
+<section class="try-it">
+    <h2 class="cta">
+        Unveil the emotions within—now it’s your turn! <br>
+        Upload your own image and let us uncover the hidden stories and feelings together.
+    </h2>
+    <div class="cta-action">
+        <a href="/upload" class="upload-btn">Upload Now</a>
     </div>
+</section>
 
-    <section class="try-it">
-        <h2 class="cta">
-            Unveil the emotions within—now it’s your turn! <br>
-            Upload your own image and let us uncover the hidden stories and feelings together.
-        </h2>
-        <div class="cta-action">
-            <a href="/upload" class="upload-btn">Upload Now</a>
-        </div>
-    </section>
-    <!-- 背景遮罩 -->
-    <div class="overlay" id="overlay"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<script>
+    let apiResponse;
+    let chartInstance;
 
-    <!-- Modal -->
-    <div class="modal" id="modal">
-        <span class="close-modal" id="closeModal">×</span>
-        <div class="modal-header">Analysis Results</div>
-        <div class="modal-body" id="modalContent"></div>
-    </div>
+    window.onload = async () => {
+        await fetch('api/recent-analysis').then(response => {
+            if (! response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-    <script>
-        let apiResponse;
-
-        window.onload = async () => {
-            await fetch('api/recent-analysis').then(response => {
-                if (! response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return response.json()
-            })
-                .then(data => {
-                    console.log(data)
-
-                    apiResponse = data.map(analysisResult => {
-                        return {
-                            id: analysisResult.id,
-                            labels: analysisResult.data.labels,
-                            sentence: analysisResult.data.sentence,
-                            sentiment: analysisResult.data.sentiment,
-                            imgSrc: `/storage/${analysisResult.data.image}`
-                        }
-                    })
-
+            return response.json()
+        })
+            .then(data => {
+                apiResponse = data.map(analysisResult => {
+                    return {
+                        id: analysisResult.id,
+                        labels: analysisResult.data.labels,
+                        sentence: analysisResult.data.sentence,
+                        sentiment: analysisResult.data.sentiment,
+                        imgSrc: `/storage/${analysisResult.data.image}`
+                    }
                 })
 
-            const gallery = document.getElementById('gallery')
-
-            apiResponse.map((analysisResult) => {
-                const div = document.createElement('div');
-                const img = document.createElement('img');
-
-                const random = Math.round(Math.random() * 2)
-
-                switch (random) {
-                    case 0: img.classList.add('large') ; break;
-                    case 1: img.classList.add('tall'); break;
-                }
-
-                img.src = analysisResult.imgSrc;
-                img.alt = analysisResult.sentence;
-                img.dataset.id = analysisResult.id;
-                img.style.cursor = 'pointer';
-
-
-                gallery.appendChild(img);
-
             })
 
-            const images = document.querySelectorAll('.gallery img');
-            const overlay = document.getElementById('overlay');
+        const gallery = document.getElementById('gallery')
 
-            images.forEach(image => {
-                image.addEventListener('click', () => {
-                    const targetWidth = image.width;
-                    const targetHeight = image.height;
+        apiResponse.map((analysisResult) => {
+            const div = document.createElement('div');
+            div.classList.add('img-box')
+            const random = Math.round(Math.random() * 2)
 
-                    // 获取图片的初始位置和大小
-                    let rect = image.getBoundingClientRect();
+            switch (random) {
+                case 0: div.classList.add('large'); break;
+                case 1: div.classList.add('tall'); break;
+            }
 
-                    const clone = image.cloneNode(true); // 克隆图片
-                    document.body.appendChild(clone);
+            const img = document.createElement('img');
+            img.src = analysisResult.imgSrc;
+            img.alt = analysisResult.sentence;
+            img.dataset.id = analysisResult.id;
+            img.style.cursor = 'pointer';
 
-                    // 设置克隆图片的初始样式
-                    const top = rect.top + 'px';
-                    const left = rect.left + 'px'
-                    const width = `${targetWidth}px`;
-                    const height = `${targetHeight}px`;
+            div.appendChild(img);
 
-                    gsap.set(clone, {
-                        position: 'fixed',
-                        top: top,
-                        left: left,
-                        width: width,
-                        height: height,
-                        borderRadius: '20px', // 初始化圆角
-                        margin: 0,
-                        zIndex: 1000,
-                        transition: 'none',
-                        overflow: 'hidden'
-                    });
+            gallery.appendChild(div);
+        })
 
-                    // 显示遮罩层
-                    overlay.classList.add('active');
+        const imgBoxes = document.querySelectorAll('.gallery .img-box');
+        const dialog = document.getElementById("dialog");
+        const closeDialog = document.getElementById("closeDialog");
 
-                    // 使用 GSAP 动画移动和放大图片
-                    gsap.to(clone, {
-                        top: '50%',
-                        left: '50%',
-                        x: '-50%',
-                        y: '-50%',
-                        width: '30rem',
-                        height: 'auto',
-                        objectFit: 'cover',
-                        borderRadius: '20px',
-                        duration: 0.8,
-                        ease: 'power3.out',
-                        onStart: () => {
-                            image.style.opacity = '0';
-                        },
-                        onComplete: () => {
-                            // 显示卡片内容（你可以在这里动态插入内容）
-                            console.log('动画完成');
-                            const diaaa = document.getElementById('diaaa');
-                            diaaa.show()
-                        }
-                    });
+        imgBoxes.forEach(imgBox => {
+            imgBox.addEventListener('click', () => {
+                const childrenImg = imgBox.querySelector('img')
+                const imgInfo = apiResponse.find(data => data.id === Number(childrenImg.dataset.id))
 
-                    // 点击遮罩关闭动画
-                    overlay.addEventListener('click', () => {
-                        // 关闭遮罩
-                        overlay.classList.remove('active');
+                const imageContainer = document.getElementById('uploadedImage');
+                imageContainer.innerHTML = '';
+                const imgElement = document.createElement('img');
+                imgElement.src = imgInfo.imgSrc;
+                imgElement.alt = imgInfo.sentence;
+                imageContainer.appendChild(imgElement);
 
-                        // 恢复图片到初始位置
-                        gsap.to(clone, {
-                            top: (rect.top + (image.height / 2) + 22.5)  + 'px',
-                            left: (rect.left + (image.width / 2) + 21.5) + 'px',
-                            width: image.width + 'px',
-                            height: image.height + 'px',
-                            borderRadius: '20px',
-                            duration: 0.8,
-                            objectFit: 'cover',
-                            ease: 'power3.inOut',
-                            onComplete: () => {
-                                clone.remove(); // 移除克隆图片
-                                image.style.opacity = '1';
-                            }
-                        });
-                    });
+                // 渲染标签
+                const labelsContainer = document.getElementById('labelsContainer');
+                labelsContainer.innerHTML = '';
+
+                imgInfo.labels.forEach(label => {
+                    const labelElement = document.createElement('div');
+                    labelElement.className = 'label';
+                    labelElement.textContent = label;
+                    labelsContainer.appendChild(labelElement);
                 });
+
+                // 渲染生成描述
+                const generatedSentence = document.getElementById('generatedSentence');
+                generatedSentence.textContent = imgInfo.sentence;
+
+                // 渲染情绪分析圆饼图
+                // 更新情绪类型和情绪强度的显示
+                const emotionType = document.getElementById('emotionType');
+                const emotionMagnitude = document.getElementById('emotionMagnitude');
+                emotionType.textContent = imgInfo.sentiment.emotion;
+                emotionMagnitude.textContent = imgInfo.sentiment.magnitude.toFixed(2);
+
+                // 数据处理
+                const data = {
+                    labels: ["Emotion Score", "Remaining"],
+                    datasets: [{
+                        label: "Emotion Score Distribution",
+                        data: [imgInfo.sentiment.score * 100, (1 - imgInfo.sentiment.score) * 100],
+                        backgroundColor: ["#4caf50", "#e0e0e0"], // 正面为绿色，剩余为灰色
+                        hoverBackgroundColor: ["#66bb6a", "#bdbdbd"]
+                    }]
+                };
+
+                // 配置
+                const config = {
+                    type: "doughnut",
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: "top",
+                                labels: {
+                                    color: "#e6edf3"
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return `${tooltipItem.label}: ${tooltipItem.raw.toFixed(1)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: "70%", // 中心空心半径
+                        elements: {
+                            center: {
+                                text: `${imgInfo.sentiment.emotion}`,
+                                fontStyle: "Roboto",
+                                color: "#4caf50", // 正面情绪颜色
+                                sidePadding: 20
+                            }
+                        }
+                    }
+                };
+
+                // 渲染图表
+                const ctx = document.getElementById("emotionChart").getContext("2d");
+
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                chartInstance = new Chart(ctx, config);
+
+                dialog.showModal(); // Open dialog
             });
-        };
-    </script>
+        });
+
+        // Close dialog when the close button is clicked
+        closeDialog.addEventListener("click", () => {
+            dialog.close(); // Close dialog
+        });
+
+        // Optionally prevent clicking outside dialog from closing it
+        dialog.addEventListener("cancel", (event) => {
+            event.preventDefault(); // Prevent default behavior (close dialog)
+        });
+    };
+</script>
 </body>
 </html>

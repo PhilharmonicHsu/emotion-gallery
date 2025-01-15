@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('test-index');
+    return view('index');
 });
 
 Route::get('/upload', function () {
@@ -30,14 +30,3 @@ Route::get('/analysis-results', function () {
 Route::get('/image-analysis', function () {
     return view('upload');
 });
-
-Route::get('/text-analysis', function () {
-    return view('text-analysis');
-});
-
-Route::get('/test-page', function () {
-   return view('test-page');
-});
-
-Route::post('/image/analyze', [ImageController::class, 'analyze'])->name('image.analyze');
-Route::post('/text/analyze', [TextAnalysisController::class, 'analyze'])->name('text.analyze');

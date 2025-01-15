@@ -7,8 +7,8 @@ use Google\Cloud\Vision\V1\BatchAnnotateImagesRequest;
 use Google\Cloud\Vision\V1\Client\ImageAnnotatorClient;
 use Google\Cloud\Vision\V1\Feature;
 use Google\Cloud\Vision\V1\Image;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenAI;
 
 class ImageAnalysisService
 {
@@ -18,16 +18,16 @@ class ImageAnalysisService
         $this->textAnalysisService = $textAnalysisService;
     }
 
-    public function analyze(Request $request): JsonResponse
+    public function analyze(Request $request): array
     {
         // 取得圖片檔案路徑
         $imagePath = $request->file('image')->getRealPath();
 
         // 初始化 ImageAnnotatorClient
         $imageAnnotator = new ImageAnnotatorClient();
-
         $descriptions = [];
-        $textAnalysis = [];
+        $sentence = '';
+        $sentiment = [];
 
         try {
             // 構建請求
@@ -48,21 +48,56 @@ class ImageAnalysisService
                 $descriptions[] = $label->getDescription();
             }
 
-            $textAnalysis = $this->textAnalysisService->analyze(implode(',', $descriptions));
+            // 構建 GPT 輸入提示
+            $prompt = $this->buildPrompt($descriptions);
+
+            // 使用 OpenAI API 調用 GPT 模型
+            $client = OpenAI::client(env('OPENAI_API_KEY'));
+            $response = $client->chat()->create([
+                'model' => 'gpt-3.5-turbo', // GPT 模型
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are a creative assistant who can generate 20-word vivid descriptions based on provided image tags.',
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt,
+                    ],
+                ],
+                'max_tokens' => 50,
+                'temperature' => 0.7,
+            ]);
+
+            // 解析 GPT 的輸出
+            $sentence = $response['choices'][0]['message']['content'];
+
+            // 進行情感分析
+            $sentiment = $this->textAnalysisService->analyze($sentence);
         } catch (\Exception $e) {
             // 處理錯誤
-            return response()->json([
+            return [
                 'error' => `Failed to analyze image: {$e->getMessage()}`,
-            ], 500);
+            ];
         } finally {
             // 關閉 API 客戶端
             $imageAnnotator->close();
         }
 
         // 回傳 JSON 結果
-        return response()->json([
+        return [
             'labels' => $descriptions,
-            'textAnalysis' => $textAnalysis
-        ]);
+            'sentence' => $sentence,
+            'sentiment' => $sentiment
+        ];
+    }
+
+    /**
+     * 构建 GPT 输入提示
+     */
+    private function buildPrompt(array $labels): string
+    {
+        $labelList = implode(", ", $labels);
+        return "Based on the following image labels: $labelList, generate a vivid and creative description of the image.";
     }
 }

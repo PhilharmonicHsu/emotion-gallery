@@ -16,8 +16,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('test-index');
 });
+
+Route::get('/upload', function () {
+    return view('upload-image');
+});
+
+Route::get('/analysis-results', function () {
+   return view('analysis-results');
+})->name('analysis-results');
 
 Route::get('/image-analysis', function () {
     return view('upload');
@@ -25,6 +33,10 @@ Route::get('/image-analysis', function () {
 
 Route::get('/text-analysis', function () {
     return view('text-analysis');
+});
+
+Route::get('/test-page', function () {
+   return view('test-page');
 });
 
 Route::post('/image/analyze', [ImageController::class, 'analyze'])->name('image.analyze');

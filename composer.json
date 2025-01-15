@@ -5,16 +5,18 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "google/cloud": "^0.270.0",
-        "google/cloud-language": "*",
-        "google/cloud-vision": "*",
+        "google/cloud-language": "^0.34",
+        "google/cloud-vision": "^1.10",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "openai-php/client": "^0.10.3"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

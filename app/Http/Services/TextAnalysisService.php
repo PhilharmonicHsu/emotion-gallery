@@ -2,17 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Enums\EntityType;
-use App\Enums\MentionType;
 use Google\Cloud\Language\V2\AnalyzeEntitiesRequest;
 use Google\Cloud\Language\V2\AnalyzeSentimentRequest;
 use Google\Cloud\Language\V2\Client\LanguageServiceClient;
 use Google\Cloud\Language\V2\Document;
-use Illuminate\Http\JsonResponse;
 
 class TextAnalysisService
 {
-    public function analyze(String $text): JsonResponse
+    public function analyze(String $text): array
     {
         // 初始化 LanguageServiceClient
         $languageServiceClient = new LanguageServiceClient();
@@ -38,28 +35,6 @@ class TextAnalysisService
         ]);
         $entityResponse = $languageServiceClient->analyzeEntities($entityRequest);
 
-        // 解析實體結果
-        $entities = [];
-        foreach ($entityResponse->getEntities() as $entity) {
-            $mentions = [];
-            $score = 0;
-            foreach ($entity->getMentions() as $mention) {
-                $mentions[] = [
-                    'text' => $mention->getText()->getContent(),
-                    'int_type' => $mention->getType(),
-                    'type' => MentionType::getTypeById($mention->getType()),
-                ];
-                $score +=  MentionType::isProper($mention->getType()) ? 2 : 1;
-            }
-
-            $entities[] = [
-                'name' => $entity->getName(),
-                'type' => EntityType::getTypeById($entity->getType()),
-                'importance' => $score,
-                'mentions' => $mentions,
-            ];
-        }
-
         // 關閉客戶端
         $languageServiceClient->close();
 
@@ -80,13 +55,10 @@ class TextAnalysisService
          * - 情感強烈：magnitude > 1
          * - 情感較弱：magnitude <= 1
          */
-        return response()->json([
-            'sentiment' => [
-                'score' => $score,
-                'magnitude' => $sentiment->getMagnitude(), // 表示情感的強烈程度 情感強烈：magnitude > 1。
-                'emotion' => $emotion
-            ],
-            'entities' => $entities,
-        ]);
+        return [
+            'score' => $score,
+            'magnitude' => $sentiment->getMagnitude(), // 表示情感的強烈程度 情感強烈：magnitude > 1。
+            'emotion' => $emotion
+        ];
     }
 }

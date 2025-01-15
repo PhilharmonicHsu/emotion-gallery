@@ -69,11 +69,16 @@
             margin-top: 0;
             margin-bottom: 0;
             text-align: center;
+            font-family: 'Exo 2', sans-serif;
         }
 
         .uploaded-image {
             text-align: center;
             margin-bottom: 20px;
+
+            h2 {
+                font-family: 'Exo 2', sans-serif;
+            }
 
             div img {
                 max-width: 100%;
@@ -96,6 +101,7 @@
                 h2 {
                     text-align: center;
                     color: white;
+                    font-family: 'Exo 2', sans-serif;
                 }
             }
 
@@ -109,6 +115,7 @@
                 text-shadow: 0 0 8px rgba(0, 212, 255, 0.7),
                 0 0 15px rgba(0, 212, 255, 0.5);
                 text-align: center;
+                font-family: 'Exo 2', sans-serif;
             }
 
             .labels #labelsContainer {
@@ -122,6 +129,7 @@
                 padding: 5px 15px;
                 border-radius: 20px;
                 font-size: 0.9rem;
+                font-family: 'Exo 2', sans-serif;
                 margin: 5px;
                 box-shadow: 0 4px 10px rgba(0, 212, 255, 0.4);
                 cursor: pointer;
@@ -141,6 +149,7 @@
             h2 {
                 color: #58a6ff;
                 text-align: center;
+                font-family: 'Exo 2', sans-serif;
             }
 
             .analysis-context {
@@ -165,6 +174,7 @@
                         margin: 10px 0;
                         font-weight: bold;
                         color: #4caf50;
+                        font-family: 'Exo 2', sans-serif;
 
                         .detail-value {
                             color: white;
@@ -181,6 +191,7 @@
             padding: 10px 30px;
             font-size: 1.2rem;
             font-weight: bold;
+            font-family: 'Exo 2', sans-serif;
             text-transform: uppercase;
             color: #ffffff;
             text-decoration: none;
@@ -190,7 +201,7 @@
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-            animation: float 2s infinite ease-in-out; /* 添加动画 */
+            animation: float 2s infinite ease-in-out;
 
             &:hover {
                 transform: scale(1.1);

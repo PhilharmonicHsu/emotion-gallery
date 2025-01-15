@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadImageRequest;
 use App\Http\Services\Api\AnalysisResultService;
 use App\Http\Services\ImageAnalysisService;
 use App\Models\AnalysisResult;
@@ -23,12 +24,10 @@ class AnalysisResultController extends Controller
         $this->imageAnalysisService = $imageAnalysisService;
         $this->analysisResultService = $analysisResultService;
     }
-    public function upload(Request $request): RedirectResponse
+    public function upload(UploadImageRequest $request): RedirectResponse
     {
         // 驗證上傳的圖片
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validated();
 
         $path = $request->file('image')->store('images', 's3');
         $url = Storage::disk('s3')->url($path);

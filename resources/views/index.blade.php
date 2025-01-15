@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artistic Image Layout</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
     <style lang="scss">
         body {
             background: linear-gradient(to bottom, #0d1117, #161b22);
             color: #e6edf3;
-            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
+
+            &.modal-open {
+                overflow: hidden;
+            }
         }
 
         .gallery {
@@ -73,6 +77,7 @@
             align-items: center;
 
             .cta {
+                font-family: 'Exo 2', sans-serif;
                 font-size: 1.8rem;
                 font-weight: bold;
                 line-height: 1.5;
@@ -104,6 +109,7 @@
                     display: inline-block;
                     margin-top: 20px;
                     font-size: 1.2rem;
+                    font-family: 'Exo 2', sans-serif;
                     font-weight: bold;
                     text-transform: uppercase;
                     color: #ffffff;
@@ -138,6 +144,7 @@
             0 0 30px rgba(106, 90, 205, 0.4);
             animation: glow 3s infinite alternate;
             margin-bottom: 20px;
+            font-family: 'Exo 2', sans-serif;
         }
 
         @keyframes moveGlow {
@@ -172,13 +179,13 @@
 
         dialog {
             width: 60%;
-            max-width: 500px;
+            height: auto;
             border: none;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             background: linear-gradient(to bottom, #0d1117, #161b22);
-            position: relative;
+            position: fixed;
 
             &::backdrop {
                 background-color: rgba(0, 0, 0, 0.5);
@@ -198,8 +205,6 @@
                     color: #333;
                 }
             }
-
-
         }
     </style>
 </head>
@@ -364,6 +369,7 @@
 
                 chartInstance = new Chart(ctx, config);
 
+                document.body.classList.add('modal-open'); // 禁用滾動
                 dialog.showModal(); // Open dialog
             });
         });
@@ -371,6 +377,7 @@
         // Close dialog when the close button is clicked
         closeDialog.addEventListener("click", () => {
             dialog.close(); // Close dialog
+            document.body.classList.remove('modal-open'); // 禁用滾動
         });
 
         // Optionally prevent clicking outside dialog from closing it

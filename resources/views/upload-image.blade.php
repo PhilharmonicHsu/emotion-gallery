@@ -97,7 +97,8 @@
 <div class="container">
     <h1>Upload Your Image</h1>
     <div class="upload-box">
-        <form id="uploadForm" method="POST" enctype="multipart/form-data" action="api/upload">
+        @csrf
+        <form id="uploadForm" method="POST" action="{{ route('upload') }}">
             <input type="file" name="image" id="imageInput" accept="image/*" required>
             <!-- 图片预览区域 -->
             <div class="preview" id="previewContainer" style="display: none;">
@@ -110,23 +111,35 @@
 </div>
 
 <script>
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 限制大小為 2MB
+
     const imageInput = document.getElementById('imageInput');
     const previewContainer = document.getElementById('previewContainer');
     const previewImage = document.getElementById('previewImage');
+    const form = document.getElementById('uploadForm');
 
     imageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
+            if (file.size > MAX_FILE_SIZE) {
+                alert("The image is too big!")
+                imageInput.value = '';
+
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 previewImage.src = e.target.result; // 设置预览图片的源
                 previewContainer.style.display = 'block'; // 显示预览区域
             };
+
             reader.readAsDataURL(file); // 读取文件为 DataURL
         } else {
             previewContainer.style.display = 'none'; // 如果未选择文件，则隐藏预览
         }
     });
+
 </script>
 </body>
 </html>

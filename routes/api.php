@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/upload', [AnalysisResultController::class, 'upload']);
+Route::post('/upload', [AnalysisResultController::class, 'upload'])->name('upload');
 Route::get('/analysis/{analysisResult:id}', [AnalysisResultController::class, 'getAnalysisResult']);
 Route::get('/recent-analysis', [AnalysisResultController::class, 'getRecentAnalysisResults']);

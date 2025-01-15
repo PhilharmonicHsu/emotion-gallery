@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "8.3.15",
         "google/cloud": "^0.270.0",
         "google/cloud-language": "^0.34",
         "google/cloud-vision": "^1.10",

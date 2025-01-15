@@ -244,7 +244,7 @@
                         labels: analysisResult.data.labels,
                         sentence: analysisResult.data.sentence,
                         sentiment: analysisResult.data.sentiment,
-                        imgSrc: `/storage/${analysisResult.data.image}`
+                        imgSrc: analysisResult.data.image
                     }
                 })
 

@@ -9,6 +9,7 @@ use App\Models\AnalysisResult;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Storage;
 
 class AnalysisResultController extends Controller
 {
@@ -29,10 +30,11 @@ class AnalysisResultController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $path = $request->file('image')->store('uploads', 'public');
+        $path = $request->file('image')->store('images', 's3');
+        $url = Storage::disk('s3')->url($path);
 
         $analysisResult = $this->imageAnalysisService->analyze($request);
-        $analysisResult['image'] = $path;
+        $analysisResult['image'] = $url;
 
         $createdAnalysisResult = $this->analysisResultService->createAnalysisResult($analysisResult);
 

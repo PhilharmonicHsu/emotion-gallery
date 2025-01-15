@@ -50,7 +50,7 @@
                     labels: data.data.labels,
                     sentence: data.data.sentence,
                     sentiment: data.data.sentiment,
-                    imgSrc: `/storage/${data.data.image}`
+                    imgSrc: data.data.image
                 }
             })
 

@@ -71,7 +71,6 @@
 
         .try-it {
             margin-bottom: 10rem;
-            height: 5rem;
             display: flex;
             flex-direction: column;
             justify-content: center;

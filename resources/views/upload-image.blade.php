@@ -98,7 +98,7 @@
     <h1>Upload Your Image</h1>
     <div class="upload-box">
         @csrf
-        <form id="uploadForm" method="POST" action="{{ route('upload') }}">
+        <form id="uploadForm" enctype="multipart/form-data" method="POST" action="{{ route('upload') }}">
             <input type="file" name="image" id="imageInput" accept="image/*" required>
             <!-- 图片预览区域 -->
             <div class="preview" id="previewContainer" style="display: none;">

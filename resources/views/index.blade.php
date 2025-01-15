@@ -187,6 +187,10 @@
             background: linear-gradient(to bottom, #0d1117, #161b22);
             position: fixed;
 
+            @media (max-width: 400px) {
+                width: 100%;
+            }
+
             &::backdrop {
                 background-color: rgba(0, 0, 0, 0.5);
             }

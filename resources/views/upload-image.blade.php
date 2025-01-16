@@ -91,6 +91,40 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+
+        #loadingSpinner {
+            display: none; /* 預設隱藏 */
+            margin-left: 10px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            display: none; /* 預設隱藏 */
+            margin-left: 10px;
+        }
+
+        .loading-active #loadingSpinner,
+        .loading-active .loading-text {
+            display: inline-block; /* 顯示動畫和文字 */
+        }
+
+        .loading-active #submitButton {
+            display: none; /* 隱藏按鈕 */
+        }
     </style>
 </head>
 <body>
@@ -105,7 +139,7 @@
                 <h2>Preview:</h2>
                 <img id="previewImage" src="#" alt="Selected Image">
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" id="submitButton">Submit</button>
         </form>
     </div>
 </div>
@@ -116,7 +150,6 @@
     const imageInput = document.getElementById('imageInput');
     const previewContainer = document.getElementById('previewContainer');
     const previewImage = document.getElementById('previewImage');
-    const form = document.getElementById('uploadForm');
 
     imageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -140,6 +173,26 @@
         }
     });
 
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        const submitButton = document.getElementById('submitButton');
+        const loadingWrap = document.createElement('div');
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.id = 'loadingSpinner';
+
+        const loadingText = document.createElement('span');
+        loadingText.className = 'loading-text';
+        loadingText.innerText = 'Analyzing...';
+
+        loadingWrap.appendChild(loadingSpinner)
+        loadingWrap.appendChild(loadingText)
+        loadingWrap.style.display = 'flex'
+        loadingWrap.style.justifyContent = 'center';
+        loadingWrap.style.marginTop = '1.5rem'
+
+        submitButton.parentNode.appendChild(loadingWrap);
+
+        this.classList.add('loading-active');
+    });
 </script>
 </body>
 </html>

@@ -55,7 +55,7 @@ class UploadImageRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors(),
-            'message' => '資料驗證失敗',
+            'message' => 'Invalid Input Data',
         ], 422));
     }
 }
